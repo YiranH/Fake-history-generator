@@ -1,7 +1,9 @@
 var tabId = -1;
 var started = false;
-var min = 2;
-var max = 5;
+var minInterval = 5;
+var maxInterval = 6;
+var searchNewsProb = 0.5;
+var jumpProb = 0.5;
 
 function searchOnNewTab(query) {
     chrome.tabs.create(
@@ -15,8 +17,23 @@ function searchOnNewTab(query) {
     );
 }
 
+function search(query) {
+    chrome.tabs.update(
+        tabId,
+        {
+            url: "http://google.com/search?q=" + query,
+            active: false
+        }
+    );
+}
+
 function run() {
-    jumpResult();
+    var prob = Math.random();
+    if (prob < searchNewsProb) {
+        search('123456');
+    } else {
+        jumpResult();
+    }
 }
 
 function start() {
@@ -42,7 +59,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch(message.type) {
         // create new tab and search
         case 'start':
-            // search('123456');
             start();
             break;
         // jump to search result
@@ -66,7 +82,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (tab.id === tabId && started) {
-        var interval = Math.floor(Math.random() * (max - min + 1) + min);
+        var interval = Math.floor(Math.random() * (maxInterval - minInterval + 1) + minInterval);
         setTimeout(run, interval * 1000);
     }
 });
