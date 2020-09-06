@@ -1,8 +1,8 @@
-var tabId = -1;
+var workTabId = -1;
 var started = false;
 var minInterval = 5;
 var maxInterval = 6;
-var searchNewsProb = 0.5;
+var searchNewsProb = 0.1;
 var jumpProb = 0.5;
 
 function searchOnNewTab(query) {
@@ -12,14 +12,14 @@ function searchOnNewTab(query) {
             active: false
         },
         function (tab) {
-            tabId = tab.id;
+            workTabId = tab.id;
         }
     );
 }
 
 function search(query) {
     chrome.tabs.update(
-        tabId,
+        workTabId,
         {
             url: "http://google.com/search?q=" + query,
             active: false
@@ -43,7 +43,7 @@ function start() {
 
 function jumpResult() {
     chrome.tabs.sendMessage(
-        tabId, 
+        workTabId, 
         {
             type:"jumpResult"
         }
@@ -68,7 +68,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         // update tab by url
         case 'updateTab':
             chrome.tabs.update(
-                tabId,
+                workTabId,
                 {
                     url: message.link,
                     active: false
@@ -80,8 +80,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }
 });
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (tab.id === tabId && started) {
+// search or jump every certain amount of time
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    if (tabId === workTabId && started) {
         var interval = Math.floor(Math.random() * (maxInterval - minInterval + 1) + minInterval);
         setTimeout(run, interval * 1000);
     }
