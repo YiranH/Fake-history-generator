@@ -11,3 +11,7 @@ function start() {
 };
 
 document.getElementById('start').addEventListener('click', start);
+
+function testPopup() {
+    search('123456');
+}
