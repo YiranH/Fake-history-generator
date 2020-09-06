@@ -28,10 +28,10 @@ function search(query) {
 }
 
 function run() {
-    chrome.tabs.get(workTabId, function (tab) {        
+    chrome.tabs.get(workTabId, function (tab) {
         if (chrome.runtime.lastError) {
-          console.log(chrome.runtime.lastError.message);
-          stop();
+            console.log(chrome.runtime.lastError.message);
+            stop();
         } else {
             var prob = Math.random();
             if (prob < searchNewsProb) {
@@ -50,9 +50,9 @@ function start() {
 
 function stop() {
     started = false;
-    chrome.tabs.get(workTabId, function (tab) {        
+    chrome.tabs.get(workTabId, function (tab) {
         if (chrome.runtime.lastError) {
-          console.log(chrome.runtime.lastError.message);
+            console.log(chrome.runtime.lastError.message);
         } else {
             chrome.tabs.remove(workTabId);
         }
@@ -61,11 +61,25 @@ function stop() {
 
 function jumpResult() {
     chrome.tabs.sendMessage(
-        workTabId, 
+        workTabId,
         {
-            type:"jumpResult"
+            type: "jumpResult"
         }
     );
+}
+
+function searchNews() {
+    var word = getRandomWord();
+    search(word);
+}
+
+function getRandomWord() {
+    getNewsJson();
+    console.log(wordList);
+    var index = Math.floor(Math.random() * wordList.length);
+    // var index = 0;
+    var word = wordList[index];
+    return word;
 }
 
 chrome.runtime.onInstalled.addListener(function () {
@@ -74,7 +88,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     console.log(message.type);
-    switch(message.type) {
+    switch (message.type) {
         // create new tab and search
         case 'start':
             start();
