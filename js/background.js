@@ -129,7 +129,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (tabId === workTabId && started) {
         var interval = Math.floor(Math.random() * (maxInterval - minInterval + 1) + minInterval);
-        setTimeout(run, interval * 1000);
+        setTimeout(run, interval * 3000);
     }
 });
 

@@ -3,11 +3,51 @@
 
 <head>
     <title>Options</title>
+    <style type="text/css">
+        body {
+            min-width: 200px;
+            max-width: 100%;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .name {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            font-weight: 600;
+            font-style: normal;
+            margin-left: 16px;
+        }
+
+        .tagline {
+            font-family: "serif";
+            font-size: 14px;
+            line-height: 1.5em;
+            text-transform: none;
+            letter-spacing: 1px;
+            font-style: italic;
+            margin-left: 16px;
+        }
+
+        button {
+            height: 30px;
+            width: 50px;
+            outline: none;
+            margin-left: 16px;
+        }
+    </style>
+
 </head>
 
 <body>
-    <button type="button" id="start">Start</button>
-    <button type="button" id="stop">Stop</button>
+    <div>
+        <p class="name">History Maker</p>
+        <p class="tagline">Fake browsering history generator.</p>
+        <button type="button" id="start">Start</button>
+        <button type="button" id="stop">Stop</button>
+    </div>
+
     <script type="text/javascript" src="../js/popup.js"></script>
 </body>
 
