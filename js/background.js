@@ -22,7 +22,8 @@ function search(query) {
         workTabId,
         {
             url: "http://google.com/search?q=" + query,
-            active: false
+            active: false,
+            muted: true
         }
     );
 }
@@ -75,7 +76,8 @@ function updateTab(link) {
         workTabId,
         {
             url: link,
-            active: false
+            active: false,
+            muted: true
         }
     );
 }
