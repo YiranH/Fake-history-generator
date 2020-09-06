@@ -13,7 +13,6 @@ function goToSearchResults() {
             links.push(link);
         }
     }
-    console.log('links: ' + JSON.stringify(links));
     randomJump(links);
 }
 
@@ -32,10 +31,37 @@ function randomJump(links) {
     });
 }
 
-// when receiving jumpResult from pupup window, jump to result
+function pickWord() {
+    var text = document.body.innerText;
+    var words = text.split(' ');
+    var wordsSet = new Set();
+    var stopWords = getStopWords();
+    for (var word of words) {
+        if (!stopWords.has(word)) {
+            word = word.toLowerCase();
+            wordsSet.add(word);
+        }
+    }
+    var wordsForQuery = Array.from(wordsSet);
+    var index = Math.floor(Math.random() * wordsForQuery.length);
+    chrome.runtime.sendMessage({
+        type: 'word',
+        word: wordsForQuery[index]
+    });
+
+}
+
+
+// return link or word to background
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    if (message.type === 'jumpResult') {
-        goToSearchResults();
+    switch (message.type) {
+        // jump to a link
+        case 'jumpResult':
+            goToSearchResults();
+            break;
+        // pick a word from webpage
+        case 'pickWord':
+            pickWord();
     }
 });
 

@@ -23,7 +23,8 @@
                 "*://*/*"
             ],
             "js": [
-                "js/content.js"
+                "js/content.js",
+                "js/stopWords.js"
             ]
         }
     ],

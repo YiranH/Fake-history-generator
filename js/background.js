@@ -3,7 +3,7 @@ var started = false;
 var minInterval = 5;
 var maxInterval = 6;
 var searchNewsProb = 0.1;
-var jumpProb = 0.5;
+var searchWordsProb = 0.3;
 
 function searchOnNewTab(query) {
     chrome.tabs.create(
@@ -30,17 +30,28 @@ function search(query) {
 function run() {
     chrome.tabs.get(workTabId, function (tab) {
         if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError.message);
+            console.log(chrome.runtime.lastError.message);
             stop();
         } else {
             var prob = Math.random();
             if (prob < searchNewsProb) {
                 search(getRandomWord());
+            } else if (prob < searchNewsProb + searchWordsProb) {
+                pickWord();
             } else {
                 jumpResult();
             }
         }
     });
+}
+
+function pickWord() {
+    chrome.tabs.sendMessage(
+        workTabId,
+        {
+            type: "pickWord"
+        }
+    );
 }
 
 function start() {
@@ -52,7 +63,7 @@ function stop() {
     started = false;
     chrome.tabs.get(workTabId, function (tab) {
         if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError.message);
+            console.log(chrome.runtime.lastError.message);
         } else {
             chrome.tabs.remove(workTabId);
         }
@@ -93,6 +104,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         // update tab by url
         case 'updateTab':
             updateTab(message.link);
+            break;
+        // search word in page
+        case 'word':
+            search(message.word);
             break;
         // stop
         case 'stop':

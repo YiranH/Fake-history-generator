@@ -21,13 +21,13 @@ function getNewsJson(searchOnNewTab, getRandomWord) {
         if (status === 'success') {
             //         wordSet = parseWords(data);
             //     } else {
-            //         console.error(request);
+            //         console.log(request);
             //     }
             wordList = parseWords(data);
             var word = getRandomWord();
             searchOnNewTab(word);
         } else {
-            console.error(data);
+            console.log(data);
         }
     });
     // var request = new XMLHttpRequest()
@@ -39,7 +39,7 @@ function getNewsJson(searchOnNewTab, getRandomWord) {
     //     if (request.status >= 200 && request.status < 400) {
     //         wordSet = parseWords(data);
     //     } else {
-    //         console.error(request);
+    //         console.log(request);
     //     }
     // }
     // request.send()
@@ -57,7 +57,7 @@ function getNewsJson(searchOnNewTab, getRandomWord) {
 
 function parseWords(news) {
     var words = new Set();
-    var stopWordSet = new Set(getStopWords());
+    var stopWordSet = getStopWords();
     for (const item of news['results']) {
         const abstract = item['abstract'].slice(0, -1);
         for (var word of abstract.split(' ')) {
