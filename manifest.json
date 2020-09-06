@@ -1,7 +1,7 @@
 {
-    "name": "Browser History Faker",
+    "name": "History Maker",
     "version": "1.0",
-    "description": "Fake browser history!",
+    "description": "Fake your browsing history!",
     "permissions": [
         "storage",
         "tabs",
