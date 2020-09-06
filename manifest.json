@@ -1,0 +1,25 @@
+{
+    "name": "Browser History Faker",
+    "version": "1.0",
+    "description": "Fake browser history!",
+    "permissions": [
+        "storage",
+        "tabs",
+        "activeTab",
+        "<all_urls>"
+    ],
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_title": "popup action page",
+        "default_popup": "static/popup.html",
+        "default_icon": {
+            "16": "images/get_started16.png"
+        }
+    },
+    "manifest_version": 2
+}
