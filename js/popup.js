@@ -2,7 +2,6 @@ function start() {
     chrome.runtime.sendMessage({
         type: 'start'
     });
-    // search("random");
 };
 
 // stop

@@ -1,34 +1,28 @@
 
 // go to on google search results
-function goToSearchResults() {
+function pickLink() {
     var links = [];
     var linksElement = document.links;
     for (var i = 0; i < linksElement.length; i++) {
         var link = linksElement[i].href;
-        console.log('link: ' + link);
 
         // check if it is a search result
-        if (isSearchResult(link)) {
+        if (isValidLink(link)) {
             // push into links
             links.push(link);
         }
     }
-    randomJump(links);
+
+    var index = Math.floor(Math.random() * links.length);
+    chrome.runtime.sendMessage({
+        type: 'updateTab',
+        link: links[index]
+    });
 }
 
 // check if it is a search result
-function isSearchResult(link) {
+function isValidLink(link) {
     return link.startsWith('http') && !link.includes('google');
-}
-
-// random jump to a link in a list of links
-function randomJump(links) {
-    var index = Math.floor(Math.random() * links.length);
-    var link = links[index];
-    chrome.runtime.sendMessage({
-        type: 'updateTab',
-        link: link
-    });
 }
 
 function pickWord() {
@@ -43,6 +37,7 @@ function pickWord() {
         }
     }
     var wordsForQuery = Array.from(wordsSet);
+
     var index = Math.floor(Math.random() * wordsForQuery.length);
     chrome.runtime.sendMessage({
         type: 'word',
@@ -56,8 +51,8 @@ function pickWord() {
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.type) {
         // jump to a link
-        case 'jumpResult':
-            goToSearchResults();
+        case 'pickLink':
+            pickLink();
             break;
         // pick a word from webpage
         case 'pickWord':

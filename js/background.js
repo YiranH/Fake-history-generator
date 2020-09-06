@@ -39,7 +39,7 @@ function run() {
             } else if (prob < searchNewsProb + searchWordsProb) {
                 pickWord();
             } else {
-                jumpResult();
+                pickLink();
             }
         }
     });
@@ -80,11 +80,11 @@ function updateTab(link) {
     );
 }
 
-function jumpResult() {
+function pickLink() {
     chrome.tabs.sendMessage(
         workTabId,
         {
-            type: "jumpResult"
+            type: "pickLink"
         }
     );
 }
