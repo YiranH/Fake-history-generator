@@ -16,7 +16,7 @@ var wordList = [];
 //     cache: 'default'
 // });
 
-function getNewsJson() {
+function getNewsJson(searchOnNewTab, getRandomWord) {
     $.get(url, function (data, status) {
         if (status === 'success') {
             //         wordSet = parseWords(data);
@@ -24,6 +24,8 @@ function getNewsJson() {
             //         console.error(request);
             //     }
             wordList = parseWords(data);
+            var word = getRandomWord();
+            searchOnNewTab(word);
         } else {
             console.error(data);
         }

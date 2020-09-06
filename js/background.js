@@ -30,12 +30,12 @@ function search(query) {
 function run() {
     chrome.tabs.get(workTabId, function (tab) {
         if (chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError.message);
+            console.error(chrome.runtime.lastError.message);
             stop();
         } else {
             var prob = Math.random();
             if (prob < searchNewsProb) {
-                search('123456');
+                search(getRandomWord());
             } else {
                 jumpResult();
             }
@@ -45,18 +45,28 @@ function run() {
 
 function start() {
     started = true;
-    searchOnNewTab('random');
+    getNewsJson(searchOnNewTab, getRandomWord);
 }
 
 function stop() {
     started = false;
     chrome.tabs.get(workTabId, function (tab) {
         if (chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError.message);
+            console.error(chrome.runtime.lastError.message);
         } else {
             chrome.tabs.remove(workTabId);
         }
     });
+}
+
+function updateTab(link) {
+    chrome.tabs.update(
+        workTabId,
+        {
+            url: link,
+            active: false
+        }
+    );
 }
 
 function jumpResult() {
@@ -68,45 +78,23 @@ function jumpResult() {
     );
 }
 
-function searchNews() {
-    var word = getRandomWord();
-    search(word);
-}
-
 function getRandomWord() {
-    getNewsJson();
-    console.log(wordList);
     var index = Math.floor(Math.random() * wordList.length);
-    // var index = 0;
     var word = wordList[index];
     return word;
 }
 
-chrome.runtime.onInstalled.addListener(function () {
-    console.log("Hello World!");
-});
-
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    console.log(message.type);
     switch (message.type) {
         // create new tab and search
         case 'start':
             start();
             break;
-        // jump to search result
-        case 'jumpResult':
-            jumpResult();
-            break;
         // update tab by url
         case 'updateTab':
-            chrome.tabs.update(
-                workTabId,
-                {
-                    url: message.link,
-                    active: false
-                }
-            );
+            updateTab(message.link);
             break;
+        // stop
         case 'stop':
             stop();
     }
