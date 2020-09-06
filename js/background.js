@@ -28,17 +28,35 @@ function search(query) {
 }
 
 function run() {
-    var prob = Math.random();
-    if (prob < searchNewsProb) {
-        search('123456');
-    } else {
-        jumpResult();
-    }
+    chrome.tabs.get(workTabId, function (tab) {        
+        if (chrome.runtime.lastError) {
+          console.log(chrome.runtime.lastError.message);
+          stop();
+        } else {
+            var prob = Math.random();
+            if (prob < searchNewsProb) {
+                search('123456');
+            } else {
+                jumpResult();
+            }
+        }
+    });
 }
 
 function start() {
     started = true;
     searchOnNewTab('random');
+}
+
+function stop() {
+    started = false;
+    chrome.tabs.get(workTabId, function (tab) {        
+        if (chrome.runtime.lastError) {
+          console.log(chrome.runtime.lastError.message);
+        } else {
+            chrome.tabs.remove(workTabId);
+        }
+    });
 }
 
 function jumpResult() {
@@ -76,7 +94,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             );
             break;
         case 'stop':
-            started = false;
+            stop();
     }
 });
 
@@ -88,3 +106,8 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     }
 });
 
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+    if (tabId === workTabId) {
+        started = false;
+    }
+})
