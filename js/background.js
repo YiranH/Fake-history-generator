@@ -95,6 +95,10 @@ function getRandomWord() {
     return word;
 }
 
+function block() {
+    search(getRandomWord());
+}
+
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch (message.type) {
         // create new tab and search
@@ -108,6 +112,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         // search word in page
         case 'word':
             search(message.word);
+            break;
+        // can't jump or search word on page
+        case 'block':
+            block();
             break;
         // stop
         case 'stop':

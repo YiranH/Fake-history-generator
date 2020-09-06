@@ -13,6 +13,12 @@ function pickLink() {
         }
     }
 
+    // if can not find link
+    if (links.length <= 0) {
+        block();
+        return;
+    }
+
     var index = Math.floor(Math.random() * links.length);
     chrome.runtime.sendMessage({
         type: 'updateTab',
@@ -38,12 +44,24 @@ function pickWord() {
     }
     var wordsForQuery = Array.from(wordsSet);
 
+    // if can not find word
+    if (wordsForQuery.length <= 0) {
+        block();
+        return;
+    }
+
     var index = Math.floor(Math.random() * wordsForQuery.length);
     chrome.runtime.sendMessage({
         type: 'word',
         word: wordsForQuery[index]
     });
 
+}
+
+function block() {
+    chrome.runtime.sendMessage({
+        type: 'block'
+    });
 }
 
 
