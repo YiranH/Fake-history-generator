@@ -3,8 +3,7 @@ var started = false;
 var min = 2;
 var max = 5;
 
-// open a google search tab
-function search(query) {
+function searchOnNewTab(query) {
     chrome.tabs.create(
         {
             url: "http://google.com/search?q=" + query,
@@ -17,14 +16,12 @@ function search(query) {
 }
 
 function run() {
-    if (!started) {
-        return;
-    }
-
     jumpResult();
-    console.log('jump result');
-    var interval = Math.floor(Math.random() * (max - min + 1) + min);
-    setTimeout(run, interval * 1000);
+}
+
+function start() {
+    started = true;
+    searchOnNewTab('random');
 }
 
 function jumpResult() {
@@ -45,10 +42,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch(message.type) {
         // create new tab and search
         case 'start':
-            started = true;
-            search('123456');
-            var interval = Math.floor(Math.random() * (max - min + 1) + min);
-            setTimeout(run, interval * 1000);
+            // search('123456');
+            start();
             break;
         // jump to search result
         case 'jumpResult':
@@ -66,6 +61,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             break;
         case 'stop':
             started = false;
+    }
+});
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    if (tab.id === tabId && started) {
+        var interval = Math.floor(Math.random() * (max - min + 1) + min);
+        setTimeout(run, interval * 1000);
     }
 });
 
