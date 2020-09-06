@@ -1,4 +1,7 @@
 var tabId = -1;
+var started = false;
+var min = 2;
+var max = 5;
 
 // open a google search tab
 function search(query) {
@@ -13,6 +16,26 @@ function search(query) {
     );
 }
 
+function run() {
+    if (!started) {
+        return;
+    }
+
+    jumpResult();
+    console.log('jump result');
+    var interval = Math.floor(Math.random() * (max - min + 1) + min);
+    setTimeout(run, interval * 1000);
+}
+
+function jumpResult() {
+    chrome.tabs.sendMessage(
+        tabId, 
+        {
+            type:"jumpResult"
+        }
+    );
+}
+
 chrome.runtime.onInstalled.addListener(function () {
     console.log("Hello World!");
 });
@@ -22,16 +45,14 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     switch(message.type) {
         // create new tab and search
         case 'start':
+            started = true;
             search('123456');
+            var interval = Math.floor(Math.random() * (max - min + 1) + min);
+            setTimeout(run, interval * 1000);
             break;
         // jump to search result
         case 'jumpResult':
-            chrome.tabs.sendMessage(
-                tabId, 
-                {
-                    type:"jumpResult"
-                }
-            );
+            jumpResult();
             break;
         // update tab by url
         case 'updateTab':
@@ -43,7 +64,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 }
             );
             break;
+        case 'stop':
+            started = false;
     }
-    console.log('tabId' + tabId);
 });
 

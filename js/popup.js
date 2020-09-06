@@ -13,8 +13,16 @@ function jumpResult() {
     
 }
 
+// stop
+function stop() {
+    chrome.runtime.sendMessage({
+        type: 'stop'
+    });
+}
+
 document.getElementById('start').addEventListener('click', start);
 document.getElementById('jumpResult').addEventListener('click', jumpResult);
+document.getElementById('stop').addEventListener('click', stop);
 
 function testPopup() {
     search('123456');
